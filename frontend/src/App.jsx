@@ -1,9 +1,5 @@
+import AppRoutes from "./routes/AppRoutes";
 function App(){
-  return (
-    <div>
-      <h1>DataSight AI </h1>
-      <p>Bussiness Intelligence Dashboard</p>
-    </div>
-  );
+  return<AppRoutes />;
 }
 export default App;
