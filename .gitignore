@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+.venv/
+venv/
+env/
+
+# Environment
+.env
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Vite
+dist/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads
+backend/uploads/
+
+# Reports
+backend/reports/
+
+# Logs
+*.log
