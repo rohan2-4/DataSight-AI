@@ -1,3 +1,4 @@
+import Button from './Button';
 function Hero() {
     return (
         <section className="min-h-screen flex items-center justify-center bg-slate-100">
@@ -7,9 +8,14 @@ function Hero() {
                     Transfrom your business data into meaningful insights with
                     interactive dashboards and analytics.
                 </p>
-                <button className="mt-8 bg-blue-600 text-white px-8 rounded-lg hover:bg-blue-700 transition">
+                <div className="mt-8 flex justify-center gap-4">
+                <Button >
                     Get Started
-                </button>
+                </Button>
+                <Button variant="secondary">
+                    Live Demo
+                </Button>
+                </div>
             </div>
         </section>
     );
