@@ -19,17 +19,17 @@ ChartJS.register(
   Legend
 );
 
-function AnalyticsChart() {
+function AnalyticsChart({ uploads }) {
   const data = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Uploads",
-        data: [20, 35, 28, 50, 42, 60],
-        backgroundColor: "#2563eb",
-      },
-    ],
-  };
+  labels: ["Uploads"],
+  datasets: [
+    {
+      label: "Number of Uploads",
+      data: [uploads.length],
+      backgroundColor: "#2563eb",
+    },
+  ],
+};
 
   const options = {
     responsive: true,

@@ -7,31 +7,61 @@ import UploadSection from "../components/UploadSection";
 import AnalyticsChart from "../components/AnalyticsChart";
 function Dashboard() {
 
-  const [stats, setStats] = useState([]);
 
+
+const [uploads, setUploads] = useState(() => {
+  const savedUploads = localStorage.getItem("uploads");
+
+  if (savedUploads) {
+    return JSON.parse(savedUploads);
+  }
+
+  return [
+    {
+      file: "sales.csv",
+      size: "2 MB",
+      status: "Uploaded",
+    },
+    {
+      file: "customers.xlsx",
+      size: "5 MB",
+      status: "Uploaded",
+    },
+  ];
+});
+const [csvData, setCsvData] = useState([]);
+const [darkMode, setDarkMode] = useState(false);
   useEffect(() => {
     console.log("Dashboard Loaded Successfully");
+    console.log(csvData);
+    
+  },[csvData] );
+  useEffect(() => {
+  localStorage.setItem(
+    "uploads",
+    JSON.stringify(uploads)
+  );
+}, [uploads]);
 
-    const dashboardData = [
-      { title: "Datasets", value: 120 },
+    const stats = [
+      { title: "Datasets", value: uploads.length },
       { title: "Reports", value: 45 },
       { title: "Users", value: 1250 },
       { title: "AI Insights", value: 60 },
       { title: "Storage Used", value: "10 GB" },
-      { title: "Uploads Today", value: 10 },
+      { title: "Uploads Today", value:uploads.length },
       { title: "Accuracy", value: "98%" },
     ];
 
-    setStats(dashboardData);
 
-  }, []);
 
   return (
-    <div className="flex">
+    <div className={darkMode ? "flex bg-gray-900 ": "flex"}>
 
       <Sidebar />
 
-      <div className="flex-1 bg-slate-100 min-h-screen p-8">
+      <div className={darkMode ?  "flex-1 bg-gray-800 min-h-screen p-8 text-white"
+                  : "flex-1 bg-slate-100 min-h-screen p-8"}>
 
   <h1 className="text-4xl font-bold mb-8">
     Welcome, Rohan 👋
@@ -49,17 +79,33 @@ function Dashboard() {
   </div>
 
   {/* Analytics Chart */}
-  <AnalyticsChart />
+  <AnalyticsChart 
+    uploads={uploads}  
+  />
 
   {/* Upload Section */}
-  <UploadSection />
+  <UploadSection 
+    uploads={uploads}
+    setUploads={setUploads}
+    csvData={csvData}
+    setCsvData={setCsvData}
+  />
 
   {/* Recent Uploads */}
-  <RecentUploads />
+  <RecentUploads 
+    uploads={uploads}
+    setUploads={setUploads}
+    darkmode={darkMode}
+  />
 
   {/* Activity Feed */}
   <ActivityFeed />
-
+<button
+  onClick={() => setDarkMode(!darkMode)}
+  className="bg-blue-600 text-white px-4 py-2 rounded mb-4"
+>
+  {darkMode ? "☀ Light Mode" : "🌙 Dark Mode"}
+</button>
 </div>
 
     </div>

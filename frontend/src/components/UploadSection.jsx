@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState,useRef } from "react";
+import Papa from "papaparse";
 
-function UploadSection() {
+function UploadSection({ uploads, setUploads,csvData, setCsvData }) {
   const [selectedFile, setSelectedFile] = useState(null);
-
+  const fileInputRef = useRef(null);
+  
+  
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -12,7 +15,26 @@ function UploadSection() {
       alert("Please select a file.");
       return;
     }
+    const newUpload = {
+    file: selectedFile.name,
+    size: `${(selectedFile.size / 1024).toFixed(2)} KB`,
+    status: "Uploaded",
+  };
 
+  setUploads((prevUploads) => [...prevUploads, newUpload]);
+  Papa.parse(selectedFile, {
+  header: true,
+  skipEmptyLines: true,
+
+  complete: function (results) {
+    console.log(results.data);
+
+    setCsvData(results.data);
+  },
+});
+
+  setSelectedFile(null);
+   fileInputRef.current.value = "";
     alert(`File "${selectedFile.name}" is ready to upload.`);
   };
 
@@ -26,6 +48,7 @@ function UploadSection() {
       <div className="flex gap-4 items-center">
 
         <input
+          ref={fileInputRef}
           type="file"
           accept=".csv,.xlsx"
           onChange={handleFileChange}
