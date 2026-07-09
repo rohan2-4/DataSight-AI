@@ -5,6 +5,8 @@ import RecentUploads from "../components/RecentUploads";
 import ActivityFeed from "../components/ActivityFeed";
 import UploadSection from "../components/UploadSection";
 import AnalyticsChart from "../components/AnalyticsChart";
+import CsvPreview from "../components/CsvPreview";
+import AIInsights from "../components/AIInsights";
 function Dashboard() {
 
 
@@ -21,11 +23,13 @@ const [uploads, setUploads] = useState(() => {
       file: "sales.csv",
       size: "2 MB",
       status: "Uploaded",
+      date: "2026-07-01T10:00:00.000Z",
     },
     {
       file: "customers.xlsx",
       size: "5 MB",
       status: "Uploaded",
+      date: "2026-07-01T10:00:00.000Z",
     },
   ];
 });
@@ -106,6 +110,13 @@ const [darkMode, setDarkMode] = useState(false);
 >
   {darkMode ? "☀ Light Mode" : "🌙 Dark Mode"}
 </button>
+<CsvPreview
+  csvData={csvData}
+  />
+<AIInsights
+   uploads={uploads}
+   csvData={csvData}
+   />
 </div>
 
     </div>

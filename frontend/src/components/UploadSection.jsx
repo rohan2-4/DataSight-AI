@@ -7,6 +7,7 @@ function UploadSection({ uploads, setUploads,csvData, setCsvData }) {
   
   
   const handleFileChange = (event) => {
+    console.log(event.target.files[0]);
     setSelectedFile(event.target.files[0]);
   };
 
@@ -19,6 +20,7 @@ function UploadSection({ uploads, setUploads,csvData, setCsvData }) {
     file: selectedFile.name,
     size: `${(selectedFile.size / 1024).toFixed(2)} KB`,
     status: "Uploaded",
+    date: new Date().toISOString(),
   };
 
   setUploads((prevUploads) => [...prevUploads, newUpload]);
@@ -27,9 +29,15 @@ function UploadSection({ uploads, setUploads,csvData, setCsvData }) {
   skipEmptyLines: true,
 
   complete: function (results) {
-    console.log(results.data);
+    console.log("Complete Results:", results);
+    console.log("Data:", results.data);
+    console.log("Errors:", results.errors);
 
     setCsvData(results.data);
+  },
+
+  error: function (error) {
+    console.log("Parse Error:", error);
   },
 });
 
