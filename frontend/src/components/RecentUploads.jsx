@@ -2,53 +2,92 @@ import { useState } from "react";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 function RecentUploads({ uploads, setUploads,darkmode }) {
   const [search, setSearch] = useState("");
   const [sortBy,setSortBy] = useState("default")
-  const [editIndex, setEditIndex] = useState(null);
+  const [editUpload, setEditUpload] = useState(null);
   const [editFileName, setEditFileName] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const uploadsPerPage = 5;
 
-  // Delete File
-  const handleDelete = (indexToDelete) => {
-    const updatedUploads = uploads.filter(
-      (_, index) => index !== indexToDelete
-    );
-
-    setUploads(updatedUploads);
-    toast.success(`"${fileName}" deleted successfully!`);
+  const getUploadName = (upload) => {
+    return (upload?.filename || upload?.file || "").toString();
   };
 
+  // Delete File
+ const handleDelete = async (uploadId) => {
+  try {
+    await axios.delete(
+      `http://127.0.0.1:8000/uploads/${uploadId}`
+    );
+
+    setUploads(
+      uploads.filter((upload) => upload.id !== uploadId)
+    );
+
+    toast.success("File deleted successfully!");
+
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to delete file.");
+  }
+};
+
   // Edit File
-  const handleEdit = (index) => {
-    setEditIndex(index);
-    setEditFileName(uploads[index].file);
+  const handleEdit = (upload) => {
+    setEditUpload(upload);
+    setEditFileName(getUploadName(upload));
   };
 
   // Save Edited File
-  const handleSave = (index) => {
-    const updatedUploads = [...uploads];
+const handleSave = async () => {
+  if (!editUpload) return;
 
-    updatedUploads[index].file = editFileName;
+  try {
+    await axios.put(
+      `http://127.0.0.1:8000/uploads/${editUpload.id}`,
+      {
+        filename: editFileName,
+      }
+    );
+
+    const updatedUploads = uploads.map((upload) =>
+      upload.id === editUpload.id
+        ? {
+            ...upload,
+            filename: editFileName,
+          }
+        : upload
+    );
 
     setUploads(updatedUploads);
 
-    setEditIndex(null);
+    toast.success("Filename updated successfully!");
+
+    setEditUpload(null);
     setEditFileName("");
 
-  };
+  } catch (error) {
+    console.error(error);
+
+    toast.error("Failed to update filename.");
+  }
+};
   // Filter and Sort Uploads
 const filteredUploads = uploads.filter((upload) =>
-  upload.file.toLowerCase().includes(search.toLowerCase())
+  getUploadName(upload).toLowerCase().includes(search.toLowerCase())
 );
 
 const sortedUploads = [...filteredUploads];
 
 if (sortBy === "name") {
-  sortedUploads.sort((a, b) => a.file.localeCompare(b.file));
-}
+  sortedUploads.sort((a, b) =>
+    getUploadName(a).localeCompare(getUploadName(b))
+  );
+} 
 
 if (sortBy === "size") {
   sortedUploads.sort(
@@ -58,7 +97,7 @@ if (sortBy === "size") {
 
 if (sortBy === "status") {
   sortedUploads.sort((a, b) =>
-    a.status.localeCompare(b.status)
+    (a.status || "").localeCompare(b.status || "")
   );
 }
 if (sortBy === "Newest") {
@@ -82,9 +121,9 @@ const handleExportCSV = () => {
   const headers = ["File Name", "Size", "Status"];
 
   const rows = uploads.map((upload) => [
-    upload.file,
-    upload.size,
-    upload.status,
+    getUploadName(upload),
+    upload.size || "",
+    upload.status || "",
   ]);
 
   const csvContent = [
@@ -121,9 +160,9 @@ const handleExportPDF = () => {
     head: [["File Name", "Size", "Status"]],
 
     body: uploads.map((upload) => [
-      upload.file,
-      upload.size,
-      upload.status,
+      getUploadName(upload),
+      upload.size || "",
+      upload.status || "",
     ]),
   });
 
@@ -177,7 +216,7 @@ const handleExportPDF = () => {
           {currentUploads.map((upload, index) => (
               <tr key={index} className="border-b">
                 <td className="py-3">
-                  {editIndex === index ? (
+                  {editUpload === upload ? (
                     <input
                       type="text"
                       value={editFileName}
@@ -185,7 +224,7 @@ const handleExportPDF = () => {
                       className="border rounded px-2 py-1"
                     />
                   ) : (
-                    upload.file
+                    getUploadName(upload)
                   )}
                 </td>
 
@@ -195,22 +234,22 @@ const handleExportPDF = () => {
 
                 <td>
                   <button
-                    onClick={() => handleDelete(index)}
+                    onClick={() => handleDelete(upload.id)}
                     className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                   >
                     Delete
                   </button>
 
-                  {editIndex === index ? (
+                  {editUpload === upload ? (
                     <button
-                      onClick={() => handleSave(index)}
+                      onClick={handleSave}
                       className="bg-green-600 text-white px-3 py-1 rounded ml-2 hover:bg-green-700"
                     >
                       Save
                     </button>
                   ) : (
                     <button
-                      onClick={() => handleEdit(index)}
+                      onClick={() => handleEdit(upload)}
                       className="bg-yellow-500 text-white px-3 py-1 rounded ml-2 hover:bg-yellow-600"
                     >
                       Edit

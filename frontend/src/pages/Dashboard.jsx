@@ -7,6 +7,7 @@ import UploadSection from "../components/UploadSection";
 import AnalyticsChart from "../components/AnalyticsChart";
 import CsvPreview from "../components/CsvPreview";
 import AIInsights from "../components/AIInsights";
+import axios from "axios";
 function Dashboard() {
 
 
@@ -33,6 +34,23 @@ const [uploads, setUploads] = useState(() => {
     },
   ];
 });
+const fetchUploads = async () => {
+  try {
+    const response = await axios.get(
+      "http://127.0.0.1:8000/uploads"
+    );
+
+    console.log("Uploads: " ,response.data);
+
+    setUploads(response.data);
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+useEffect(() => {
+    fetchUploads();
+}, []);
 const [csvData, setCsvData] = useState([]);
 const [darkMode, setDarkMode] = useState(false);
   useEffect(() => {

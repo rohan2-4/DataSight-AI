@@ -15,32 +15,35 @@ function AIInsights({ uploads, csvData,darkMode }) {
     : 0;
 
 const textColumns = totalColumns - numericColumns;
-    const totalStorage = uploads.reduce((total, upload) => {
-     return total + parseFloat(upload.size);
-}, 0);
-              
+    const getUploadName = (upload) => {
+  return (upload?.file || upload?.filename || "").toString();
+};
 
-    const averageStorage =
-     uploads.length > 0
-        ? totalStorage / uploads.length
-        : 0;
-    const largestFile =
-  uploads.length > 0
-    ? uploads.reduce((largest, current) =>
-        parseFloat(current.size) > parseFloat(largest.size)
-          ? current
-          : largest
-      )
-    : null;
-    const lastUploaded =
-  uploads.length > 0
-    ? uploads.reduce((latest, current) =>
-        new Date(current.date) > new Date(latest.date)
-          ? current
-          : latest
-      )
-    : null;
-    const missingValues = csvData.reduce((count, row) => {
+const totalStorage = uploads.reduce((total, upload) => {
+  return total + parseFloat(upload.size || 0);
+}, 0);
+
+const averageStorage =
+ uploads.length > 0
+    ? totalStorage / uploads.length
+    : 0;
+const largestFile =
+uploads.length > 0
+  ? uploads.reduce((largest, current) =>
+      parseFloat(current.size || 0) > parseFloat(largest.size || 0)
+        ? current
+        : largest
+    )
+  : null;
+const lastUploaded =
+uploads.length > 0
+  ? uploads.reduce((latest, current) =>
+      new Date(current.date) > new Date(latest.date)
+        ? current
+        : latest
+    )
+  : null;
+const missingValues = csvData.reduce((count, row) => {
   Object.values(row).forEach((value) => {
     if (
       value === "" ||
@@ -70,15 +73,15 @@ const aiSummary = `
 Your dataset contains ${csvData.length} rows and ${totalColumns} columns.
 Data quality is ${dataQuality}% with ${duplicateRows} duplicate rows and ${missingValues} missing values.
 The largest uploaded file is ${
-  largestFile ? largestFile.file : "N/A"
+  largestFile ? getUploadName(largestFile) : "N/A"
 }.
 `;
 const csvFiles = uploads.filter((upload) =>
-  upload.file.toLowerCase().endsWith(".csv")
+  getUploadName(upload).toLowerCase().endsWith(".csv")
 ).length;
 
 const excelFiles = uploads.filter((upload) =>
-  upload.file.toLowerCase().endsWith(".xlsx")
+  getUploadName(upload).toLowerCase().endsWith(".xlsx")
 ).length;
 
   return (
