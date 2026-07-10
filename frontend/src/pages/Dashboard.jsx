@@ -116,6 +116,7 @@ const [darkMode, setDarkMode] = useState(false);
 <AIInsights
    uploads={uploads}
    csvData={csvData}
+   darkMode={darkMode}
    />
 </div>
 

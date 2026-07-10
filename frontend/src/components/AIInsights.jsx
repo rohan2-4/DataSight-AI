@@ -1,4 +1,8 @@
-function AIInsights({ uploads, csvData }) {
+function AIInsights({ uploads, csvData,darkMode }) {
+  const cardClass = darkMode
+  ? "bg-gray-700 p-4 rounded-lg shadow"
+  : "bg-blue-100 p-4 rounded-lg shadow";
+  
     const totalColumns =
   csvData.length > 0
     ? Object.keys(csvData[0]).length
@@ -78,18 +82,23 @@ const excelFiles = uploads.filter((upload) =>
 ).length;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 mt-8">
+    <div className={
+      darkMode
+      ? "bg-gray-800 text-white rounded-xl shadow-lg p-6 mt-8"
+      : "bg-white rounded-xl shadow-lg p-6 mt-8"
+       }>
       <h2 className="text-2xl font-bold mb-4">
         🤖 AI Insights
       </h2>
 
       <div className="grid grid-cols-2 gap-4">
 
-        <div className="bg-blue-100 p-4 rounded-lg">
+        <div className={cardClass}>
           <h3>Total Files</h3>
+
           <p className="text-2xl font-bold">
-            {uploads.length}
-          </p>
+           {uploads.length}
+        </p>
         </div>
 
         <div className="bg-green-100 p-4 rounded-lg">
@@ -193,7 +202,11 @@ const excelFiles = uploads.filter((upload) =>
         🤖 AI Summary
         </h3>
 
-        <p className="text-gray-700">
+        <p  className={
+          darkMode
+            ? "text-gray-300"
+            : "text-gray-700"
+          }>
             {aiSummary}
         </p>
         </div>

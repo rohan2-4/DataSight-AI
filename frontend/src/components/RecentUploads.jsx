@@ -18,6 +18,7 @@ function RecentUploads({ uploads, setUploads,darkmode }) {
     );
 
     setUploads(updatedUploads);
+    toast.success(`"${fileName}" deleted successfully!`);
   };
 
   // Edit File
