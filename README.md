@@ -260,8 +260,7 @@ https://github.com/rohan2-4
 Portfolio:
 https://rohan2-4.github.io/Mywebsite/
 
-LinkedIn:
-(Add your LinkedIn profile here)
+
 
 ---
 
