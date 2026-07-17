@@ -1,0 +1,7 @@
+Date,Region,Product,Sales,Quantity,Profit
+2026-07-01,North,Widgets,100.5,10,25.0
+2026-07-02,South,Gismos,250.0,5,120.0
+2026-07-03,East,Widgets,150.0,15,35.0
+2026-07-04,West,Gismos,300.0,12,150.0
+2026-07-05,North,Widgets,80.0,8,15.0
+2026-07-06,South,Gismos,450.0,20,200.0
